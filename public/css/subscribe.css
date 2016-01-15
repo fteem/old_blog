@@ -1,0 +1,75 @@
+#mc_embed_signup {
+  background: #fff;
+  clear: left;
+  font: 14px Helvetica,Arial,sans-serif; }
+
+/* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+#mc_embed_signup_scroll {
+  border-radius: 2px;
+  border: 1px solid #d0d0d0;
+  padding: 20px; }
+
+#mc_embed_signup_scroll p {
+  text-align: center;
+  margin-top: 20px; }
+
+#mce-EMAIL {
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  border-left: 1px solid #d0d0d0;
+  border-top: 1px solid #d0d0d0;
+  border-bottom: 1px solid #d0d0d0;
+  border-right: none;
+  color: #2E2E2E;
+  display: inline;
+  flex: 3;
+  padding: 8px;
+  width: 85%; }
+
+#mce-EMAIL:focus {
+  outline: 0; }
+
+#mc-embedded-subscribe {
+  display: inline;
+  flex: 1;
+  width: 15%;
+  background-color: #36393D;
+  color: #eee;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border: 1px solid #36393D;
+  transition: 0.2s ease; }
+
+#mc-embedded-subscribe:hover {
+  background-color: #d0d0d0;
+  border: 1px solid #d0d0d0;
+  color: #36393D; }
+
+#mc_embed_signup_scroll h3 {
+  text-align: center; }
+
+.mc-field-group {
+  -moz-display: flex;
+  -webkit-display: flex;
+  display: flex;
+  margin: 0 auto;
+  width: 70%; }
+
+#mce-success-response, #mce-error-response {
+  width: 70%;
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 15px; }
+
+#mce-success-response {
+  color: #6BBA70; }
+
+#mce-error-response {
+  color: #B02B2C; }
+
+#mc_embed_signup p.explanation {
+  width: 90%;
+  text-align: center;
+  margin: 10px auto 20px; }
+

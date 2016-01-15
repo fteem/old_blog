@@ -1,26 +1,33 @@
 # Dependencies
-markdown:         redcarpet
+markdown:         kramdown
 highlighter:      pygments
 
 # Permalinks
-permalink:        pretty
+permalink: :title
 relative_permalinks: true
 
 # Setup
-title:            Hyde
-tagline:          'A Jekyll theme'
-description:      'A brazen two-column <a href="http://jekyllrb.com" target="_blank">Jekyll</a> theme that pairs a prominent sidebar with uncomplicated content. Made by <a href="https://twitter.com/mdo" target="_blank">@mdo</a>.'
-url:              http://hyde.getpoole.com
+title:            Ilija Eftimov
+tagline:          'A human, interested in programming'
+description:      'A human, interested in programming'
+url:              http://eftimov.net
 baseurl:          /
 
 author:
-  name:           'Mark Otto'
-  url:            https://twitter.com/mdo
+  name:     "Ilija Eftimov"
+  github:   "fteem"
+  linkedin: "ieftimov"
+  twitter:  "fteem"
+  email:    "ileeftimov+blog@gmail.com"
+  disqus:   "eftimov"
 
-paginate:         5
+paginate:         10
 
 # Custom vars
 version:          2.1.0
 
 github:
-  repo:           https://github.com/poole/hyde
+  repo:           https://github.com/fteem/hyde
+
+google_analytics: 'UA-11264459-2'
+

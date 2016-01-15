@@ -1,30 +1,25 @@
 ---
 layout: page
-title: About
+title: About me
+sidebar: true
 ---
 
-<p class="message">
-  Hey there! This page is included as an example. Feel free to customize it for your own use upon downloading. Carry on!
-</p>
+My name is Ilija Eftimov, but you can call me Ile. Everyone does.
 
-In the novel, *The Strange Case of Dr. Jeykll and Mr. Hyde*, Mr. Poole is Dr. Jekyll's virtuous and loyal butler. Similarly, Poole is an upstanding and effective butler that helps you build Jekyll themes. It's made by [@mdo](https://twitter.com/mdo).
+Welcome to my personal blog. Here, I will be writing about Ruby, Rails, JavaScript
+and web development in general. Also, I am planning to write about my journey to
+Elixir and functional programming land.
 
-There are currently two themes built on Poole:
+You will also find some posts about general stuff, not just programming. I think that
+those will be kept to a minimum.
 
-* [Hyde](http://hyde.getpoole.com)
-* [Lanyon](http://lanyon.getpoole.com)
+My day job is as a full-stack Ruby on Rails developer, working for
+<a href='http://siyelo.com'>Siyelo</a> as a consultant.
 
-Learn more and contribute on [GitHub](https://github.com/poole).
+In my spare time, I am the author of couple of tiny Ruby gems, I am one of the
+organizers of Rails Girls in Macedonia and I am a part-time programming tutor.
 
-## Setup
+If you have any inquiries, you can also get in touch via <a href="mailto:ileeftimov+blog@gmail.com">email</a>.
+You can download my CV <a href="/CV-Ilija-Eftimov.pdf" target="_blank">here</a>.
 
-Some fun facts about the setup of this project include:
-
-* Built for [Jekyll](http://jekyllrb.com)
-* Developed on GitHub and hosted for free on [GitHub Pages](https://pages.github.com)
-* Coded with [Sublime Text 2](http://sublimetext.com), an amazing code editor
-* Designed and developed while listening to music like [Blood Bros Trilogy](https://soundcloud.com/maddecent/sets/blood-bros-series)
-
-Have questions or suggestions? Feel free to [open an issue on GitHub](https://github.com/poole/issues/new) or [ask me on Twitter](https://twitter.com/mdo).
-
-Thanks for reading!
+You can see my reading list [here](/reading).
