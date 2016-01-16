@@ -60,10 +60,14 @@ class CPU
   # Power... unlimited power! #StarWars
 end
 
-class Smartphone
-  attr_accessor :model, :screen, :cpu, :ram, :memory
+class RAM
+  # Yeah!
+end
 
-  def initialize(model, screen, cpu, ram, memory, os)
+class Smartphone
+  attr_accessor :model, :screen, :cpu, :ram, :memory, :os
+
+  def initialize(model = nil, screen = nil, cpu = nil, ram = nil, memory = nil, os = nil)
     @model  = model
     @screen = screen
     @cpu    = cpu
@@ -72,6 +76,7 @@ class Smartphone
     @os     = os
   end
 end
+
 {% endhighlight %}
 
 This is quite simlpe, but it implies that you will need to create objects from
@@ -93,8 +98,6 @@ methods that will make the configuration of these objects easier.
 
 {% highlight ruby %}
 class SmartphoneBuilder
-  attr_reader :smartphone
-
   def initialize
     @smartphone = Smartphone.new
   end
@@ -121,6 +124,12 @@ class SmartphoneBuilder
 
   def set_os(os)
     @smartphone.os = os
+  end
+
+  def smartphone
+    obj = @smartphone.dup
+    @smartphone = Smartphone.new
+    return obj
   end
 end
 {% endhighlight %}
@@ -189,6 +198,86 @@ pattern comes in handy. Sure, the second code example might be more verbose, but
 on the other hand it's super clear and very hard to get confused by it. There
 are a ton of other situations where one could use the builder pattern, but in
 this case it plays nicely when eliminating this code smell.
+
+**Edited**, 16th of January, 2016:
+
+Additionally, thanks to couple of readers and colleagues, who I **thank a ton**
+for weighing in, a very interesting and approach to builders is using a building
+block. The usage would look like:
+
+{% highlight ruby %}
+class OrderTest < Minitest::Test
+  def test_contains_multiple_products
+    order = Order.new
+    5.times do
+      smartphone = SmartphoneBuilder.build do |builder|
+        builder.set_model("Apple iPhone 6S")
+        builder.add_touchscreen(4.7)
+        builder.add_processor(1.84)
+        builder.add_ram(2048)
+        builder.add_memory(16384)
+        builder.set_os(:ios)
+      end
+      order.products << smartphone
+    end
+    assert_equal 5, order.products.length
+    # Sanity check
+    assert_equal "Apple iPhone 6S", order.products.last.model
+  end
+end
+{% endhighlight %}
+
+As you can see, this looks super nice, which is half the reason I agreed to add
+this to the post after it was published. The other half is usefulness, obviously.
+The implementation of the block-style builder:
+
+{% highlight ruby %}
+class SmartphoneBuilder
+  def self.build
+    builder = new
+    yield(builder)
+    builder.smartphone
+  end
+
+  def initialize
+    @smartphone = Smartphone.new
+  end
+
+  def set_model(model)
+    @smartphone.model = model
+  end
+
+  def add_processor(speed)
+    @smartphone.cpu = CPU.new(speed)
+  end
+
+  def add_touchscreen(size)
+    @smartphone.screen = Touchscreen.new(size)
+  end
+
+  def add_ram(amount)
+    @smartphone.ram = RAM.new(amount)
+  end
+
+  def add_memory(amount)
+    @smartphone.memory = amount
+  end
+
+  def set_os(os)
+    @smartphone.os = os
+  end
+
+  def smartphone
+    obj = @smartphone.dup
+    @smartphone = Smartphone.new
+    return obj
+  end
+end
+{% endhighlight %}
+
+By implementing the `SmartphoneBuilder.build` method, we expose the additional
+block-style variant of the builder, so the user can choose between the
+good-looking block building or the not-so-good-looking non-block-style version.
 
 ## (Over) Validation
 
