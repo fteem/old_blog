@@ -18,10 +18,11 @@ hardware.
 
 Amazon with its huge selection of web services ([AWS](https://aws.amazon.com/))
 and the like have made our lives much easier when it comes to incorporating
-infrastructure and tools in the cloud. Then there are Chef and Puppet that made
-provisioning servers a breeze. Then came containerization in the form of Docker,
-although some would argue that containers, or at least the idea around them,
-existed well before Docker came along.
+infrastructure and tools in the cloud. Then there are
+[Chef](https://www.chef.io/chef/) and [Puppet](https://puppetlabs.com/) that made
+provisioning servers a breeze. Then came containerization in the form of
+[Docker](https://www.docker.com/), although some would argue that containers,
+or at least the idea around them, existed well before Docker came along.
 
 Read the rest of the blog post on
 [Codeship's Blog](http://blog.codeship.com/running-a-rails-application-on-deis/).
