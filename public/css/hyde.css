@@ -254,3 +254,11 @@ a.sidebar-nav-item:focus {
   height: 120px !important;
 }
 
+.social-icons a:hover {
+  text-decoration: none;
+}
+.social-icons i {
+  margin-left: 0.2em;
+}
+
+
