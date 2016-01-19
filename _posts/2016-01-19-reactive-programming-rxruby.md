@@ -6,7 +6,7 @@ tags: [ruby, reactive programming, rx]
 
 Reactive Programming is a relatively new and interesting programming paradigm
 that has picked up quite a bit of popularity lately. Out of curiosity, I did a
-bit of reasearch over the weekend. In this blog post I will summarize what I
+bit of research over the weekend. In this blog post I will summarize what I
 learned and try to explain what RP to any novice out there. Also, I show you how
 to use the Reactive Extensions for Ruby. Let's dive in!
 
@@ -22,7 +22,7 @@ invented more than 20 years ago. Yes, even functional programming. In fact, it
 was invented like 60 years ago. The problem is, just like with anything that
 evolves, priorities change.
 
-In our case, the internet happend. Sure, +20 years ago the internet did exist,
+In our case, the internet happened. Sure, +20 years ago the internet did exist,
 but it had less users then the count of views that a popular video on YouTube
 has today. Going forward 15-10 years ago, the internet grew enough, so we felt
 the need for a ton of data processing and asynchronous behaviour.
@@ -77,7 +77,7 @@ in it's standard library, which provides a simple mechanism for one object
 Now that we have an understanding of both, the Iterator and the Observer
 patterns, it's time for the Reactive Programming paradigm.
 
-Accoring to the [Reactive Manifesto](http://www.reactivemanifesto.org/),
+According to the [Reactive Manifesto](http://www.reactivemanifesto.org/),
 Reactive Systems are: Responsive, Resilient, Elastic and Message Driven. I don't
 know about you, but these type of definitions confuse me a lot. In the way that
 I understand the Reactive Manifesto, Reactive Systems are asynchronous, fault
@@ -179,7 +179,7 @@ here is that we create an observable from an array.
 
 ## More RxRuby
 
-The documentation on RxRuby is still scarse, but fortunately for us there are
+The documentation on RxRuby is still scarce, but fortunately for us there are
 a lot of [examples](https://github.com/ReactiveX/RxRuby/tree/master/examples) in
 the Github repo.
 
@@ -196,7 +196,7 @@ programming is here to stay. Netflix has built quite a big architecture built
 on the Reactive Systems paradigm. Also, the Reactive JavaScript community is
 **super vibrant**, unlike the Ruby community. But, let's hope for the best!
 
-As for me - I am looking for anyone that's profficient with RxRuby, to review
+As for me - I am looking for anyone that's proficient with RxRuby, to review
 my RxRuby Koans, so we can get it moving somewhere.
 
 ## Notes
