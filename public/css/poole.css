@@ -346,11 +346,27 @@ tbody tr:nth-child(odd) th {
 
 /* Meta data line below post title */
 .post-date {
-  display: block;
+  display: inline-block;
   margin-top: -.5rem;
   margin-bottom: 1rem;
   color: #9a9a9a;
 }
+
+.share {
+  display: inline-block;
+  float: right;
+  color: #9a9a9a;
+}
+
+.share a:hover, .share i:hover {
+  text-decoration: none;
+  color: #202020;
+}
+
+.share i {
+  margin-left: 3px;
+}
+
 
 .post-excerpt a {
   color: #303030;
