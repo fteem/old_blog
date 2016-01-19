@@ -363,6 +363,10 @@ tbody tr:nth-child(odd) th {
   color: #202020;
 }
 
+.share a:focus, .share a:visited {
+  text-decoration: none;
+}
+
 .share i {
   margin-left: 3px;
 }
