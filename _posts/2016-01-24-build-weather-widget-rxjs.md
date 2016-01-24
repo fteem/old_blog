@@ -146,9 +146,8 @@ This is rather simple - we subscribe to the data stream and set a callback. The
 callback will be invoked any time we get any data through the stream. It will
 only update the HTML on the widget, showing the temperature to the user.
 
-If you want to see the source of and/or play with this widget, here it is:
-
-<a class="jsbin-embed" href="http://jsbin.com/fimibi/2/embed?output">JS Bin on jsbin.com</a><script src="http://static.jsbin.com/js/embed.min.js?3.35.9"></script>
+If you want to see the source of and/or play with this widget,
+[here](http://jsbin.com/fimibi/2/embed?output) it is.
 
 ## Outro
 
