@@ -12,5 +12,5 @@
   <meta property="og:description" content="{{site.tagline}}" />
 {% else %}
   <meta property="og:title" content="{{page.title}}" />
-  <meta property="og:description" content="{{page.excerpt}}" />
+  <meta property="og:description" content="{{page.excerpt | strip_html}}" />
 {% endif %}

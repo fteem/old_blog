@@ -4,7 +4,7 @@
   <meta name="twitter:description" content="{{site.tagline}}"/>
 {% else %}
   <meta name="twitter:title" content="{{page.title}}"/>
-  <meta name="twitter:description" content="{{page.excerpt}}"/>
+  <meta name="twitter:description" content="{{page.excerpt | strip_html}}"/>
   <meta name="twitter:image" content="{{ page.title-image }}"/>
 {% endif %}
 <meta name="twitter:site" content="{{site.url}}"/>
