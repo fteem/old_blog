@@ -1,0 +1,12 @@
+<meta name="twitter:card" content="summary_large_image"/>
+{% if page.title == "Home" %}
+  <meta name="twitter:title" content="{{site.author.name}}"/>
+  <meta name="twitter:description" content="{{site.tagline}}"/>
+{% else %}
+  <meta name="twitter:title" content="{{page.title}}"/>
+  <meta name="twitter:description" content="{{page.excerpt}}"/>
+  <meta name="twitter:image" content="{{ page.title-image }}"/>
+{% endif %}
+<meta name="twitter:site" content="{{site.url}}"/>
+<meta name="twitter:domain" content="via @fteem"/>
+<meta name="twitter:creator" content="@fteem"/>
