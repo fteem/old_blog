@@ -1,0 +1,35 @@
+<!--FB Meta-->
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="{{site.url}}" />
+<meta property="og:site_name" content="via http://eftimov.net" />
+
+{% if page.post == true %}
+  <meta property="og:image" content="{{site.url}}/public/post-images/{{ page.image}}" />
+  <meta property="og:image:width" content="1024" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:type" content="article" />
+  <meta property="article:published_time" content="{{ page.date }}" />
+  <meta property="og:title" content="{{page.title}}" />
+  <meta property="og:description" content="{{page.excerpt | strip_html}}" />
+{% else %}
+  <meta property="og:title" content="{{site.author.name}}" />
+  <meta property="og:description" content="{{site.tagline}}" />
+{% endif %}
+
+
+<!--Twitter Meta-->
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:site" content="{{site.url}}"/>
+<meta name="twitter:domain" content="via @fteem"/>
+<meta name="twitter:creator" content="@fteem"/>
+
+{% if page.post == true %}
+  <meta name="twitter:title" content="{{page.title}}"/>
+  <meta name="twitter:description" content="{{page.excerpt | strip_html}}"/>
+  <meta name="twitter:image" content="{{site.url}}/public/post-images/{{ page.image}}"/>
+{% else %}
+  <meta name="twitter:title" content="{{site.author.name}}"/>
+  <meta name="twitter:description" content="{{site.tagline}}"/>
+{% endif %}
+
