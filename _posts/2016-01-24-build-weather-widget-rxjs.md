@@ -2,7 +2,7 @@
 layout: post
 title: "Building a Weather Widget using RxJS"
 tags: [reactive programming, rxjs, javascript]
-image: weather-widget-rxjs.png
+image: weather-widget-rxjs-post.png
 ---
 
 Reactive Programming is a very interesting programming paradigm that I started
