@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "PostgreSQL Indexes: First principles"
+title: "PostgreSQL Indexes: First Principles"
 tags: [postgresql, indexes, databases]
 image: psql-first-principles.png
 ---
