@@ -261,4 +261,7 @@ a.sidebar-nav-item:focus {
   margin-left: 0.2em;
 }
 
-
+figure {
+  margin-left: 0;
+  margin-right: 0;
+}

@@ -4,7 +4,7 @@ highlighter:      pygments
 
 # Permalinks
 permalink: :title
-relative_permalinks: true
+#relative_permalinks: true
 
 # Setup
 title:            Ilija Eftimov
@@ -31,3 +31,4 @@ github:
 
 google_analytics: 'UA-11264459-2'
 
+gems: [jekyll-paginate, jekyll-gist]
