@@ -65,7 +65,7 @@ You can take the query a lot further. Here's a real life example of a project th
 currently working on:
 
 {% highlight sql %}
-COPY (SELECT price_rules.* FROM quotes LEFT JOIN price_rules ON quotes.id = price_rules.chargeable_id where quotes.id = 437) TO '~Desktop/exports/price_rules.csv' CSV;
+COPY (SELECT price_rules.* FROM quotes LEFT JOIN price_rules ON quotes.id = price_rules.chargeable_id where quotes.id = 437) TO '~/Desktop/exports/price_rules.csv' CSV;
 {% endhighlight %}
 
 As you can see, you can use any SELECT query that can will return a data result set.
