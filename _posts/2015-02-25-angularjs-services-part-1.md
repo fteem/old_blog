@@ -64,7 +64,27 @@ What happens when you inject your newly created service to (let's say) a control
 Let's take a look at a tiny example. As we all know, the internet is made for cats.
 So, say we have a Cat provider.
 
-{% gist 96e0c13497763581893c %}
+{% highlight javascript %}
+(function(){
+	"use strict";
+
+	angular.module("app", [])
+
+	.provider('cat', function(){
+
+		this.$get = function() {
+			var name = 'Tom';
+			var color = 'Black';
+			var age = "1";
+
+			return {
+				name: name,
+				color: color
+			};
+		};
+	});
+})();
+{% endhighlight %}
 
 As you can see, this provider has a $get function that will return an instance of the
 service, which will be an object literal, containing two properties - the name and the color
@@ -72,9 +92,28 @@ of the cat.
 
 We can now inject this service in a controller and use it in a template.
 
-{% gist f5ef1ee7331490937a3c %}
+{% highlight javascript %}
+(function(){
+	angular.module('app')
+		.controller('CatsController', CatsController);
 
-{% gist 8a33a765ca00732d21b5 %}
+	function CatsController(cat){ // here we inject the cat service in our controller
+		this.name = cat.name;
+		this.color = cat.color;
+	}
+})();
+{% endhighlight %}
+
+{% highlight html %}
+<!-- ...snip.. -->
+<body ng-app='app'>
+	<div ng-controller="CatsController as cats">
+		The cat's name is: {{ cats.name }}.
+		The cat's color is: {{ cats.color }}.
+	</div>
+</body>
+<!-- ...snip.. -->
+{% endhighlight %}
 
 This is a very simple example of how to create services using the **provider** built-in service.
 
@@ -91,7 +130,51 @@ making services much more flexible.
 
 Take this for example:
 
-{% gist eb506656db18c6b13e3f %}
+{% highlight javascript %}
+(function(){
+	"use strict";
+
+	angular.module("app", [])
+
+	.provider('cat', function(){
+		var self = this;
+		var bornOn = new Date("June 18, 2012 22:03:00");
+		var today = new Date();
+
+		self.age = 1;
+
+		self.$get = function() {
+			var name = 'Tom';
+			var color = 'Black';
+
+			return {
+				name: name,
+				color: color,
+				age: self.age,
+			};
+		};
+
+		self.setAge = function(value){
+			if(typeof value === 'undefined'){
+				self.calculateAge();
+			} else {
+				self.age = value;
+			}
+		};
+
+		self.calculateAge = function(){
+		  var oneDayInMs = 1000*60*60*24;
+		  var differenceInMs = today.getTime() - bornOn.getTime();
+		  var daysDifference = Math.round(differenceInMs/oneDayInMs);
+		  self.age = Math.round(daysDifference/365);
+		};
+	})
+
+	.config(function(catProvider){
+		catProvider.setAge();
+	});
+})();
+{% endhighlight %}
 
 Let me walk you through this (bear with me!).
 
@@ -136,7 +219,11 @@ how one can configure the RestangularProvider **before** any Restangular service
 
 For example:
 
-{% gist 5b6bebcf18b52b460456 %}
+{% highlight javascript %}
+app.config(function(RestangularProvider) {
+  RestangularProvider.setBaseUrl('/api/v1');
+});
+{% endhighlight %}
 
 Here, we tell the RestangularProvider that every remote resource that we try to fetch (i.e. /users )
 should have a base URL of **/api/v1**. So, when Restangular fetches the users, it will hit **/api/v1/users**.

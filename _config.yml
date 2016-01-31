@@ -33,4 +33,3 @@ google_analytics: 'UA-11264459-2'
 
 gems:
   - jekyll-paginate
-  - jekyll-gist

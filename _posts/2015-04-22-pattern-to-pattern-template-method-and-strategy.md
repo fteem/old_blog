@@ -18,35 +18,105 @@ In it's core the Strategy Pattern (or SP) is about encapsulating logic into obje
 
 Let's see a short example of how we can use the Strategy pattern. Let's create a simple _Invoice_ class.
 
-{% gist 48a0c4a6272be7bed305 %}
+{% highlight ruby %}
+class Invoice
+  attr_accessor :formatter
+
+  def initialize amount, buyer, seller
+    @amount = amount
+    @buyer = buyer
+    @seller = seller
+    @formatter = JSONFormatter.new
+  end
+
+  def generate
+    @formatter.format! @amount, @buyer, @seller
+  end
+
+end
+{% endhighlight %}
 
 As you can see, the Invoice is consisted of an amount, the name of the buyer and the name of the seller.  In it's constructor, a formatter of the Invoice is created. The formatter is an object of a class that has a method **format!** which takes the buyer, seller and amount as params. When the method is called, it will create the invoice in it's specific format. One very important aspect of the strategy classes is that the **context class expects the strategy classes to implement**, in our example,** a format! method**. For example, in Java this is achieved by using interfaces, which force a class to implement certain methods. But because Ruby is a dynamic language, there's no such thing as an interface and we must think about this aspect in advance. That being said, lets take a look at the formatter classes - they're all pretty simple.
 
-{% gist f3a65e8736bbff541a98 %}
+{% highlight ruby %}
+class JSONFormatter
+  def format! amount, buyer_name, seller_name
+    %Q{
+      {
+        "buyer" => "#{buyer_name}",
+        "seller" => "#{seller_name}",
+        "amount" => "#{amount}"
+      }
+    }
+  end
+end
+{% endhighlight %}
 
 The _JSONFormatter_ creates the invoice in JSON format. As a side note, I am using the percentage string notation because it's a bit more readable this way.
 
-{% gist e89d4878187c787f4778 %}
+{% highlight ruby %}
+class XMLFormatter
+  def format! amount, buyer_name, seller_name
+    %Q{
+     <invoice>
+       <buyer>#{buyer_name}</buyer>
+       <seller>#{seller_name}</seller>
+       <amount>#{amount}</amount>
+     </invoice>
+   }
+  end
+end
+{% endhighlight %}
 
 The _XMLFormatter_ creates the invoice in XML format.
 
-{% gist 97a5e26d0bcd9c72422a %}
+{% highlight ruby %}
+class YAMLFormatter
+  def format! amount, buyer_name, seller_name
+    %Q{
+      ---
+      invoice:
+        buyer: #{buyer_name}
+        seller: #{seller_name}
+        amount: #{amount}
+    }
+  end
+end
+{% endhighlight %}
 
 And, last but not least, _YAMLFormatter_ creates the invoice in YAML format. The beauty of the Strategy Pattern lies in the context (the _Invoice_) and the strategies (the formatters). You see, when we first create the _Invoice_, we can use it to print out a JSON formatted invoice. And it's cool. But the cooler thing is that you can **change how the _Invoice_ will behave in runtime**, meaning, you can **change the formatter object and the behaviour of the invoice will change**. Or, said in a more abstract way, **the context's behaviour can change with every different strategy you apply to the context**. So, how this applies to our code?
 
-{% gist 5dab2c372bb63f0639a2 %}
+{% highlight ruby %}
+invoice = Invoice.new 100, "John", "Jane"
+puts invoice.generate
+{% endhighlight %}
 
 The first time we generate the Invoice, we use the JSONFormatter and of course we get an invoice back in a JSON format.
 
-{% gist e53a61f6f8dda4c96fe1 %}
+{% highlight json %}
+{
+  "buyer" => "John",
+  "cashier" => "Jane",
+  "amount" => "100"
+}
+{% endhighlight %}
 
 Now, if we **change the formatter to that same Invoice object**...
 
-{% gist 6c71c0a847e0323cb63f %}
+{% highlight ruby %}
+invoice.formatter = XMLFormatter.new
+puts invoice.generate
+{% endhighlight %}
 
 ...we will get the same invoice, formatted in XML.
 
-{% gist ea535c0fb249014f5c5e %}
+{% highlight xml %}
+<invoice>
+  <buyer>John</buyer>
+  <cashier>Jane</cashier>
+  <amount>100</amount>
+</invoice>
+{% endhighlight %}
 
 You see, our formatters change the behaviour of our _Invoice_.
 

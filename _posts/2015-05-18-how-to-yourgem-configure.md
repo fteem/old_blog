@@ -23,14 +23,30 @@ every gem is a module, that namespaces bunch of classes and methods. So, say we
 want our gem to have one method, called generate! that will return our random number.
 Under the hood, we'll just use the built in rand method.
 
-{% gist feb5e40196d46fac2171 %}
+{% highlight ruby %}
+module Randomizer
+  class << self
+    def generate!
+      rand
+    end
+  end
+end
+{% endhighlight %}
 
 This is all good, the rand method will generate a really long Float. But, lets say
 that we want the generate! method to return a number up to a maximum number? We can
 change the method to accept a number as an argument and pass that number as an
 argument to the rand method.
 
-{% gist e876cc523316b3202488 %}
+{% highlight ruby %}
+module Randomizer
+  class << self
+    def generate! max
+      rand max
+    end
+  end
+end
+{% endhighlight %}
 
 Again, really simple. But, what if we want to set a range for the random number
 that will be generated? For example, for whatever reason an user might want the
@@ -41,14 +57,48 @@ But, instead of passing the arguments every time we make the call, we can add a
 configuration block so the gem always returns random numbers in a range. This is where
 we need to introduce the configure block.
 
-{% gist 27ccce27518020261d99 %}
+{% highlight ruby %}
+module Randomizer
+  class << self
+    attr_accessor :configuration
+
+    def configure
+      @config ||= Configuration.new
+      yield(@config)
+    end
+  end
+
+  class Configuration
+    attr_accessor :from, :to
+  end
+end
+{% endhighlight %}
 
 How does this work? The configure class method stores a Configuration object
 inside the Randomizer module. Anything set from the configure block is an
 attr_accessor on the Configuration class. Now, lets add the generate! method back in
 and see how we can use the configure block.
 
-{% gist 4549dd0bee64bfb0507f %}
+{% highlight ruby %}
+module Randomizer
+  class << self
+    attr_accessor :configuration
+
+    def configure
+      @configuration ||= Configuration.new
+      yield(@configuration)
+    end
+
+    def generate!
+      (configuration.from..configuration.to).to_a.sample
+    end
+  end
+
+  class Configuration
+    attr_accessor :from, :to
+  end
+end
+{% endhighlight %}
 
 Now, the generate! method takes the from and to attributes from the
 configuration object and creates an array of it. Than, we use the Array#sample method
@@ -57,7 +107,12 @@ So, say you have a Rails app where you want to use the Randomizer gem. Configuri
 the gem can be done by adding a randomizer.rb file in the config/initializers folder.
 Then, we need to use the configure block in the file.
 
-{% gist f6a60eb05b992bb130fe %}
+{% highlight ruby %}
+Randomizer.configure do |config|
+  config.from = 100
+  config.to = 200
+end
+{% endhighlight %}
 
 Now, when we call Randomizer.generate! the method will return a random number between 100 and 200.
 Hope my explanation was good and you understood how you can use this "pattern".

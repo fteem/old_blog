@@ -21,7 +21,40 @@ Keep in mind that this is an **oversimplified example** and payment systems in r
 
 If we want to implement this payment algorithm using Stripe, it would look something like:
 
-{% gist 5cc8b7344910ea4bdf90 %}
+{% highlight ruby %}
+class StripePayment
+  def initialize card, amount
+    @api_key = ENV['STRIPE_API_KEY']
+    @card = card
+    @amount = amount
+  end
+
+  def process_payment!
+    authenticate_merchant && make_payment
+  end
+
+  def authenticate_merchant
+    begin
+      return true if Stripe::Merchant.authenticate @api_key
+    rescue Stripe::MerchantError => e
+      Rails.logger.error "Cannot establish connection between Merchant and Provider."
+      return false
+    rescue Stripe::ProviderUnreachable => e
+      Rails.logger.error "Provider unreachable."
+      return false
+    end
+  end
+
+  def make_payment
+    begin
+      return true if Stripe::Payment.process! @api_key, @card, @amount
+    rescue Stripe::PaymentUnprocessable => e
+      Rails.logger.error "Payment unprocessable, try again."
+      return false
+    end
+  end
+end
+{% endhighlight %}
 
 Again, keep in mind, this is just dummy code, not actual Stripe payment gateway implementation. Okay, so this looks all fine. We can instantiate a new _StripePayment_ object, pass the card object and the amount of the order as parameters in the initializer and call the _process_payment!_ method on the object to execute the payment. For a successful payment, we need the Merchant (our web application) to successfully authenticate with the payment provider (Stripe) and then the credit card to be charged the total of the order. If any of these two fail, the payment wont be processed.
 
@@ -30,11 +63,78 @@ Again, keep in mind, this is just dummy code, not actual Stripe payment gateway
 Software is made to grow, not die. Or sometimes, get rewritten. So what if our customers need us to add PayPal as a payment option? Easy, right? We can just add another class called _PaypalPayment_
 and add the payment logic in the class. But, hold on for a second! What if we need to add Skrill as a payment too? And what if we need to add simple credit card payment, because we have customers that don't want to register accounts with any of the aforementioned payment providers? You see, we run into a problem. We will have to add separate classes that will share a lot of the functionality. The Template Method Pattern can come into play here. So, how can we leverage TMP? We need to create a _BasePayment_ class that will store the **template method****(s)**. Then, we will create subclasses, one for every payment provider we use. In the subclasses we will add the specifics of each payment provider, while on the surface the payment will be done by calling the _process_payment!_ method on the payment object, regardless of its class. Let's create our _BasePayment_ and _StripePayment_ classes and see how we can leverage TMP.
 
-{% gist 8a7073359b7cbcb2b86a %}
+{% highlight ruby %}
+class BasePayment
+  def initialize card, amount
+    @card = card
+    @amount = amount
+  end
+
+  def process_payment!
+    authenticate_merchant && make_payment
+  end
+
+  def authenticate_merchant
+    raise NotImplementedError.new "authenticate_merchant"
+  end
+
+  def make_payment
+    raise NotImplementedError.new "make_payment"
+  end
+end
+{% endhighlight %}
+
+{% highlight ruby %}
+class StripePayment < BasePayment
+  def authenticate_merchant
+    begin
+      return true if Stripe::Merchant.authenticate ENV['STRIPE_API_KEY']
+    rescue Stripe::MerchantError => e
+      Rails.logger.error "Cannot establish connection between Merchant and Provider."
+      return false
+    rescue Stripe::ProviderUnreachable => e
+      Rails.logger.error "Provider unreachable."
+      return false
+    end
+  end
+
+  def make_payment
+    begin
+      return true if Stripe::Payment.process! ENV['STRIPE_API_KEY'], @card, @amount
+    rescue Stripe::PaymentUnprocessable => e
+      Rails.logger.error "Payment unprocessable, try again."
+      return false
+    end
+  end
+end
+{% endhighlight %}
 
 As you can see, the template-method-holding-class, or _BasePayment_, cannot be used as a standalone class. This is because we want to use the class just as a blueprint for the subclasses, instead of instantiating any objects of it. Also, all of the _BasePayment_ subclasses will have to implement the _authenticate_merchant_ and _make_payment_ methods before they can be usable. Let's add PayPal as a payment option now!
 
-{% gist 2bbb3233a1e2ab0d10df %}
+{% highlight ruby %}
+class PaypalPayment < BasePayment
+  def authenticate_merchant
+    begin
+      return true if Paypal::Account.authenticate ENV['PAYPAL_API_KEY']
+    rescue Paypal::NotAuthenticated => e
+      Rails.logger.error "Cannot establish connection between Merchant and Provider."
+      return false
+    rescue Paypal::NotFound => e
+      Rails.logger.error "Provider unreachable."
+      return false
+    end
+  end
+
+  def make_payment
+    begin
+      return true if Paypal::Payment.create! ENV['PAYPAL_API_KEY'], @card, @amount
+    rescue Paypal::UnprocessablePayment => e
+      Rails.logger.error "Payment unprocessable, try again."
+      return false
+    end
+  end
+end
+{% endhighlight %}
 
 As you can see, although the subclasses look alike, the logic in the template methods is very provider specific. The advantage is that the shared logic is inherited and the interfaces of all the payment classes are the same while the algorithm of the authentication and the payment is different in the subclasses. This is how TMP can be done in our example. Now, adding Skrill, or some other payment provider is really easy. Also, another advantage is that the rest of the web application can easily work with any of the payment classes.
 

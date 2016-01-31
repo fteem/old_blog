@@ -27,11 +27,37 @@ Factories are defined very similarly as Providers. They return a value, a functi
 or an object literal. Usually developers go with returning an object, which
 would result in a nice interface to the function. For example:
 
-{% gist 1fffd9564af90513201c %}
+{% highlight javascript %}
+(function(){
+  angular.module('app', [])
+
+  .factory('GreetingService', GreetingService);
+
+  function GreetingService() {
+    var service = {
+      greet: function() {
+        console.log("Hey there!");
+      },
+    };
+
+    return service;
+  }
+})();
+{% endhighlight %}
 
 Then, we can inject the GreetingService in a controller:
 
-{% gist b3a1de38077520def849 %}
+{% highlight javascript %}
+(function(){
+  angular.module('app')
+
+  .controller("GreetingController", GreetingController);
+
+  function GreetingController(GreetingService) {
+     GreetingService.greet();
+  }
+})();
+{% endhighlight %}
 
 As you can see, returning an object from the service creates a nice looking
 interface to the method.
@@ -43,7 +69,32 @@ that you can inject into a controller or another service.
 
 Lets take a look at, a more real-life-like, example:
 
-{% gist 316f95395518b2547952 %}
+{% highlight javascript %}
+(function(){
+  angular.module("app", [])
+
+	.factory('TemperatureService', TemperatureService);
+
+	function TemperatureService($http){
+		var API_URL = "http://api.openweathermap.org/data/2.5/weather?q=London,uk";
+
+		function get(){
+			return $http.get(API_URL)
+				.then(function(results){
+					return results.data.main.temp;
+				})
+				.catch(function(err){
+					console.log(err);
+					return 0;
+				});
+		}
+
+		return {
+			get: get
+		};
+	}
+})();
+{% endhighlight %}
 
 Here we are using [OpenWeatherMap's API](http://openweathermap.org/) which is
 free to use. We will fetch London's (UK) current temperature using a service.
@@ -61,7 +112,21 @@ errored requests and we return back the promise itself.
 
 What would injecting the service into a controller look like? Lets see:
 
-{% gist 5e8ed5cee3504f39f548 %}
+{% highlight javascript %}
+(function(){
+	angular.module('app')
+		.controller('TemperaturesController', TemperaturesController);
+
+	function TemperaturesController(TemperatureService){
+
+		TemperatureService.get().then(function(temperature){
+		  // Use the temperature in whichever way you want...
+			console.log(temperature);
+		});
+
+	}
+})();
+{% endhighlight %}
 
 Simple, right? We inject the service in the controller, call get() on the
 service and handle the returned promise from the service. Then, when we get

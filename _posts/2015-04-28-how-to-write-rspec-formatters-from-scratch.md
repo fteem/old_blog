@@ -46,7 +46,23 @@ The picture shows what we'll be working on in the rest of this post. We'll call 
 
 ### Creating the the GroupingFormatter class
 
-{% gist cd69c8a17396b055951d %}
+{% highlight ruby %}
+class GroupingFormatter
+  RSpec::Core::Formatters.register self, :dump_summary, :close
+
+  def initialize output
+    @output = output
+  end
+
+  def dump_summary notification # SummaryNotification
+    @output << "\n\nFinished in #{notification.duration}."
+  end
+
+  def close notification # NullNotification
+    @output << "\n"
+  end
+end
+{% endhighlight %}
 
 As you can see, the GroupingFormatter is just a class. In it's initializer it takes the output as an argument and sets it as an instance variable. Also, on line 2, you can see the aforementioned **RSpec.register** call. We pass _self_ as the first argument, because we want to register this class as a formatter. The rest of the arguments are method names that RSpec will call when using this formatter. What this means is that when you define a method for **the protocol, **if you don't register it - it will not be called. Basically, RSpec won't know it exists at all. Next, the **dump_summary** method calls the duration method on the notification object, which returns a number representing the time of the specs' duration in seconds. So, how can we test if this is working? The command is:
 
@@ -62,7 +78,23 @@ Finished in 0.007552.
 
 Now, this doesn't tell much. Let's use RSpec's built in helpers to format this number in a meaningful string.
 
-{% gist 3a15204f4d6226a0aebd %}
+{% highlight ruby %}
+class GroupingFormatter
+  RSpec::Core::Formatters.register self, :dump_summary, :close
+
+  def initialize output
+    @output = output
+  end
+
+  def dump_summary notification # SummaryNotification
+    @output << "\n\nFinished in #{RSpec::Core::Formatters::Helpers.format_duration(notification.duration)}."
+  end
+
+  def close notification # NullNotification
+    @output << "\n"
+  end
+end
+{% endhighlight %}
 
 In the **dump_summary** method we use the [RSpec::Core::Formatters::Helpers](http://www.rubydoc.info/gems/rspec-core/RSpec/Core/Formatters/Helpers) module which has some methods that can help us turn the duration number into a meaningful string. The output now looks like:
 
@@ -70,7 +102,35 @@ In the **dump_summary** method we use the [RSpec::Core::Formatters::Helpers](ht
 
 Okay, great. Now, lets make this formatter mimic the reporting formatter that comes with RSpec. We need the formatter to show a dot for every passing example, F for every failing example and an asterisk for every pending example.
 
-{% gist 0303873a6a7e66c0787b %}
+{% highlight ruby %}
+class GroupingFormatter
+  RSpec::Core::Formatters.register self, :dump_summary, :close, :example_passed, :example_failed, :example_pending
+
+  def initialize output
+    @output = output
+  end
+
+  def example_passed notification # ExampleNotification
+    @output << "."
+  end
+
+  def example_failed notification # FailedExampleNotification
+    @output << "F"
+  end
+
+  def example_pending notification # ExampleNotification
+    @output << "*"
+  end
+
+  def dump_summary notification # SummaryNotification
+    @output << "\n\nFinished in #{RSpec::Core::Formatters::Helpers.format_duration(notification.duration)}."
+  end
+
+  def close notification # NullNotification
+    @output << "\n"
+  end
+end
+{% endhighlight %}
 
 So, the reporter (the algorithm that follows the protocol) will call **example_failed** when an example fails, **example_pending** when an example is pending and **example_passed **when an example passes. This is really self-explanatory - we add the case specific character to the output for every example. Take note that I added the method names to the **RSpec.register** call. If I didn't - they'd be ignored. The output will now look like:
 
@@ -80,7 +140,41 @@ Finished in 0.0207 seconds.</pre>
 
 Looking good, things are starting to take shape! Now for the more complicated part. How can we group the pending/failing specs? First, lets group the pending specs.
 
-{% gist f89bbb3e28d00602ab50 %}
+{% highlight ruby %}
+class GroupingFormatter
+  RSpec::Core::Formatters.register self, :dump_summary, :close, :example_passed,
+    :example_failed, :example_pending, :dump_pending
+
+  def initialize output
+    @output = output
+  end
+
+  def example_passed notification # ExampleNotification
+    @output << "."
+  end
+
+  def example_failed notification # FailedExampleNotification
+    @output << "F"
+  end
+
+  def example_pending notification # ExampleNotification
+    @output << "*"
+  end
+
+  def dump_pending notification # ExamplesNotification
+    @output << "\n\nPENDING:\n\t"
+    @output << notification.pending_examples.map {|example| example.full_description + " - " + example.location }.join("\n\t")
+  end
+
+  def dump_summary notification # SummaryNotification
+    @output << "\n\nFinished in #{RSpec::Core::Formatters::Helpers.format_duration(notification.duration)}."
+  end
+
+  def close notification # NullNotification
+    @output << "\n"
+  end
+end
+{% endhighlight %}
 
 Lets look at the **dump_pending** method now. First, it adds "PENDING" to the output. Next, it loops through the _pending_examples_ array and creates an array of strings for each of the pending examples. Note that I added the new method to the RSpec.register call, it would be ignored otherwise. Each string in the array will look something like this:
 
@@ -95,9 +189,55 @@ PENDING:
 
 Finished in 0.01121 seconds.</pre>
 
-Looking good. Now, for the trickiest part, grouping the failing specs and adding the error underneath every failing spec. 
+Looking good. Now, for the trickiest part, grouping the failing specs and adding the error underneath every failing spec.
 
-{% gist 5c1cb442677c4bf9619d %}
+{% highlight ruby %}
+class GroupingFormatter
+  RSpec::Core::Formatters.register self, :dump_pending, :dump_failures, :close, :dump_summary, :example_passed, :example_failed, :example_pending
+
+  def initialize output
+    @output = output
+  end
+
+  def example_passed notification # ExampleNotification
+    @output << "."
+  end
+
+  def example_failed notification # FailedExampleNotification
+    @output << "F"
+  end
+
+  def example_pending notification # ExampleNotification
+    @output << "*"
+  end
+
+  def dump_pending notification # ExamplesNotification
+    @output << "\n\nPENDING:\n\t"
+    @output << notification.pending_examples.map {|example| example.full_description + " - " + example.location }.join("\n\t")
+  end
+
+  def dump_failures notification # ExamplesNotification
+    @output << "\nFAILING\n\t"
+    # For every failed example...
+    @output << notification.failed_examples.map do |example|
+      # Extract the full description of the example
+      full_description = example.full_description
+      # Extract the example location in the file
+      location = example.location
+
+      "#{full_description} - #{location}"
+    end.join("\n\n\t")
+  end
+
+  def dump_summary notification # SummaryNotification
+    @output << "\n\nFinished in #{RSpec::Core::Formatters::Helpers.format_duration(notification.duration)}."
+  end
+
+  def close notification # NullNotification
+    @output << "\n"
+  end
+end
+{% endhighlight %}
 
 In the new **dump_failures** method we loop through every failed example. Then, we extract the description and the location of the failed example and we build a string that we append to the output. After this change, the output will look like this:
 
@@ -109,9 +249,57 @@ FAILING
  Something - first that fails - ./something_spec.rb:82
  Something - second that fails - ./something_spec.rb:86</pre>
 
-Next thing, how do we add the error messages underneath every failing spec? Lets expand the **dump_failures **method just a bit. 
+Next thing, how do we add the error messages underneath every failing spec? Lets expand the **dump_failures **method just a bit.
 
-{% gist c6bd22b07504e16de893 %}
+{% highlight ruby %}
+class GroupingFormatter
+  RSpec::Core::Formatters.register self, :dump_pending, :dump_failures, :close, :dump_summary, :example_passed, :example_failed, :example_pending
+
+  def initialize output
+    @output = output
+  end
+
+  def example_passed notification # ExampleNotification
+    @output << "."
+  end
+
+  def example_failed notification # FailedExampleNotification
+    @output << "F"
+  end
+
+  def example_pending notification # ExampleNotification
+    @output << "*"
+  end
+
+  def dump_pending notification # ExamplesNotification
+    @output << "\n\nPENDING:\n\t"
+    @output << notification.pending_examples.map {|example| example.full_description + " - " + example.location }.join("\n\t")
+  end
+
+  def dump_failures notification # ExamplesNotification
+    @output << "\nFAILING\n\t"
+    # For every failed example...
+    @output << notification.failed_examples.map do |example|
+      # Extract the full description of the example
+      full_description = example.full_description
+      # Extract the example location in the file
+      location = example.location
+      # Get the Exception message
+      message = example.execution_result.exception.message
+
+      "#{full_description} - #{location} #{message}"
+    end.join("\n\n\t")
+  end
+
+  def dump_summary notification # SummaryNotification
+    @output << "\n\nFinished in #{RSpec::Core::Formatters::Helpers.format_duration(notification.duration)}."
+  end
+
+  def close notification # NullNotification
+    @output << "\n"
+  end
+end
+{% endhighlight %}
 
 The only addition is on line 34 - we extract the result of the execution of the example, then we get the message of the exception that RSpec raised when the example failed. Now, lets test it:
 
@@ -132,9 +320,82 @@ expected: false
 
 Finished in 0.0203 seconds.</pre>
 
-This is all good, but you can see that the text alignment is broken a bit. If you look at the picture at the beginning, you will notice that the exceptions should appear indented underneath the description of the failing example. Lets fix this. 
+This is all good, but you can see that the text alignment is broken a bit. If you look at the picture at the beginning, you will notice that the exceptions should appear indented underneath the description of the failing example. Lets fix this.
 
-{% gist 3c4d9a5da0827ac63a32 %}
+{% highlight ruby %}
+class GroupingFormatter
+  RSpec::Core::Formatters.register self, :dump_pending, :dump_failures, :close,
+    :dump_summary, :example_passed, :example_failed, :example_pending
+
+  def initialize output
+    @output = output
+  end
+
+  def example_passed notification # ExampleNotification
+    @output << "."
+  end
+
+  def example_failed notification # FailedExampleNotification
+    @output << "F"
+  end
+
+  def example_pending notification # ExampleNotification
+    @output << "*"
+  end
+
+  def dump_pending notification # ExamplesNotification
+    @output << "\n\nPENDING:\n\t"
+    @output << notification.pending_examples.map {|example| example.full_description + " - " + example.location }.join("\n\t")
+  end
+
+  def dump_failures notification # ExamplesNotification
+    @output << "\nFAILING\n\t"
+    @output << failed_examples_output(notification)
+  end
+
+  def dump_summary notification # SummaryNotification
+    @output << "\n\nFinished in #{RSpec::Core::Formatters::Helpers.format_duration(notification.duration)}."
+  end
+
+  def close notification # NullNotification
+    @output << "\n"
+  end
+
+  private
+
+  # Loops through all of the failed examples and rebuilds the exception message
+  def failed_examples_output notification
+    failed_examples_output = notification.failed_examples.map do |example|
+      failed_example_output example
+    end
+    build_examples_output(failed_examples_output)
+  end
+
+  # Joins all exception messages
+  def build_examples_output output
+    output.join("\n\n\t")
+  end
+
+  # Extracts the full_description, location and formats the message of each example exception
+  def failed_example_output example
+    full_description = example.full_description
+    location = example.location
+    formatted_message = strip_message_from_whitespace(example.execution_result.exception.message)
+
+    "#{full_description} - #{location} \n  #{formatted_message}"
+  end
+
+  # Removes whitespace from each of the exception message lines and reformats it
+  def strip_message_from_whitespace msg
+    msg.split("\n").map(&:strip).join("\n#{add_spaces(10)}")
+  end
+
+  def add_spaces n
+    " " * n
+  end
+
+end
+{% endhighlight %}
 
 In the example above we took the extra step to format the error messages nicely. Basically, we split the exception message on a new-line character, we remove all the whitespace and we rejoin the pieces with a newline between them and add 10 spaces at the beginning of the message (for the indentation). Now, the output will look like this:
 
@@ -155,9 +416,88 @@ FAILING
 
 Finished in 0.02068 seconds.</pre>
 
-And voila, the formatter is working as supposed. Or, is it? :) Lets add some colors! Adding colors is really easy, we just need to require the [ConsoleCodes](http://www.rubydoc.info/gems/rspec-core/RSpec/Core/Formatters/ConsoleCodes) module. The ConsoleCodes module provides helpers for formatting console output with ANSI codes, for example colors and bold. So, the final version of our GroupingFormatter is: 
+And voila, the formatter is working as supposed. Or, is it? :) Lets add some colors! Adding colors is really easy, we just need to require the [ConsoleCodes](http://www.rubydoc.info/gems/rspec-core/RSpec/Core/Formatters/ConsoleCodes) module. The ConsoleCodes module provides helpers for formatting console output with ANSI codes, for example colors and bold. So, the final version of our GroupingFormatter is:
 
-{% gist ac1a1fab4506ed9c4166 %}
+{% highlight ruby %}
+require 'rspec/core/formatters/console_codes'
+
+class GroupingFormatter
+  RSpec::Core::Formatters.register self, :dump_pending, :dump_failures, :close,
+    :dump_summary, :example_passed, :example_failed, :example_pending
+
+  def initialize output
+    @output = output
+  end
+
+  def example_passed notification # ExampleNotification
+    @output << RSpec::Core::Formatters::ConsoleCodes.wrap(".", :success)
+  end
+
+  def example_failed notification # FailedExampleNotification
+    @output << RSpec::Core::Formatters::ConsoleCodes.wrap("F", :failure)
+  end
+
+  def example_pending notification # ExampleNotification
+    @output << RSpec::Core::Formatters::ConsoleCodes.wrap("*", :pending)
+  end
+
+  def dump_pending notification # ExamplesNotification
+    if notification.pending_examples.length > 0
+      @output << "\n\n#{RSpec::Core::Formatters::ConsoleCodes.wrap("PENDING:", :pending)}\n\t"
+      @output << notification.pending_examples.map {|example| example.full_description + " - " + example.location }.join("\n\t")
+    end
+  end
+
+  def dump_failures notification # ExamplesNotification
+    if notification.failed_examples.length > 0
+      @output << "\n#{RSpec::Core::Formatters::ConsoleCodes.wrap("FAILING:", :failure)}\n\t"
+      @output << failed_examples_output(notification)
+    end
+  end
+
+  def dump_summary notification # SummaryNotification
+    @output << "\n\nFinished in #{RSpec::Core::Formatters::Helpers.format_duration(notification.duration)}."
+  end
+
+  def close notification # NullNotification
+    @output << "\n"
+  end
+
+  private
+
+  # Loops through all of the failed examples and rebuilds the exception message
+  def failed_examples_output notification
+    failed_examples_output = notification.failed_examples.map do |example|
+      failed_example_output example
+    end
+    build_examples_output(failed_examples_output)
+  end
+
+  # Joins all exception messages
+  def build_examples_output output
+    output.join("\n\n\t")
+  end
+
+  # Extracts the full_description, location and formats the message of each example exception
+  def failed_example_output example
+    full_description = example.full_description
+    location = example.location
+    formatted_message = strip_message_from_whitespace(example.execution_result.exception.message)
+
+    "#{full_description} - #{location} \n  #{formatted_message}"
+  end
+
+  # Removes whitespace from each of the exception message lines and reformats it
+  def strip_message_from_whitespace msg
+    msg.split("\n").map(&:strip).join("\n#{add_spaces(10)}")
+  end
+
+  def add_spaces n
+    " " * n
+  end
+
+end
+{% endhighlight %}
 
 As you can see, we are using the *ConsoleCodes.wrap* method which wraps a piece of text in ANSI codes with the supplied code in the arguments. You can now test our new colored formatter:
 

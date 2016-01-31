@@ -16,12 +16,37 @@ In this post, we will look at two more types of services - Value and Constant.
 The Value service is basically a service that returns a single value, like,
 string, object, number or an array. For instance:
 
-{% gist 989fb78bfb8a184ee0b7 %}
+{% highlight javascript %}
+(function(){
+  angular.module('app', [])
+    .value("Number", 24)
+
+    .value("String", "Hey, how are you?")
+
+    .value("Object", {
+      prop1: 'prop1',
+      prop2: 'prop2'
+    })
+
+    .value("Array", [1,2,3,4,5]);
+})();
+{% endhighlight %}
 
 The Value service is basically like writing a service using Provider, whose **$get**
 function returns a plain value (string/object/number/array).
 
-{% gist 25471b6fef5e051a66cb %}
+{% highlight javascript %}
+(function(){
+  angular.module('app', [])
+
+    .provider("Value", function(){
+      this.$get = function(){
+        return "I am a value.";
+      };
+    });
+
+})();
+{% endhighlight %}
 
 If you are unfamiliar of the way Provider works, take a look [here](/angularjs-services-part-1).
 One drawback of Value is that it cannot be injected into a module configuration
@@ -36,7 +61,14 @@ The Constant service is really the same like Value, with two key differences:
 
 For consistency's sake, lets see how constants are defined:
 
-{% gist 09f124345e25202b4638 %}
+{% highlight javascript %}
+(function(){
+  angular.module('app', [])
+
+    .constant("Pi", 3.1415)
+    .constant('e', 2.718);
+})();
+{% endhighlight %}
 
 One last note - injecting Value and Constant services in controllers is done just like
 any other services.
