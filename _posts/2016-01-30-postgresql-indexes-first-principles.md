@@ -184,11 +184,11 @@ As you can notice, this simple query requires a **Seq**uential **Scan**, because
 there is no `WHERE` clause in it. This means that it will have to scan each row
 of the table and return it.
 
-In the paretheses we notice couple of values. The cost is a range of miliseconds
-- starting from the expected before the output phase can begin, to the estimated
-total cost of this query. Then, the numbers of rows output that were estimated
-by the query planner. Last, the width represents the average width of the rows,
-in bytes.
+In the paretheses we notice couple of values. The cost is a range of arbitrary
+units (that closely resemble disk page fetches) - starting from the expected
+before the output phase can begin, to the estimated total cost of this query.
+Then, the numbers of rows output that were estimated by the query planner. Last,
+the width represents the average width of the rows, in bytes.
 
 Let's add a `WHERE` clause to the query:
 
@@ -260,7 +260,7 @@ Index Scan using email_idx on users  (cost=0.28..8.29 rows=1 width=48)
   Index Cond: ((email)::text = 'phughes5m@nbcnews.com'::text)
 {% endhighlight %}
 
-Whoa! The projected query cost dropped from the original 22.50ms to 8.29ms. So,
+Whoa! The projected query cost dropped from the original 22.50 to 8.29. So,
 what changed? As you can notice, instead of a Sequential Scan, now PostgreSQL
 will issue a **Index Scan**. We won't go into details here, because types and
 approaches of scanning is topic for another blogpost. Simply said, Postgres
