@@ -15,9 +15,10 @@ Book template, just copy and paste this:
 -->
 
 One of my 2016 resolutions is reading more books, whether they are technical or
-not.  In this list, I have also added books that I have read in the past. At
-least, the ones I remember. Also, I've made a list of books that I am definitely
-going to read. As you can see below, I am quite a thriller books fan.
+not. In this list, which I promise is not a complete one, I have also added books
+that I have read in the past. At least, the ones I remember. Also, I've made a
+list of books that I am definitely going to read. As you can see below, I am
+quite a thriller books fan.
 
 ## Ongoing
 
