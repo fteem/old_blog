@@ -2,7 +2,7 @@
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="via http://eftimov.net" />
 
-{% if page.post == true %}
+{% if layout.post == true %}
   <meta property="og:image" content="{{site.url}}/public/post-images/{{ page.image}}" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1024" />
@@ -26,7 +26,7 @@
 <meta name="twitter:domain" content="via @fteem"/>
 <meta name="twitter:creator" content="@fteem"/>
 
-{% if page.post == true %}
+{% if layout.post == true %}
   <meta name="twitter:title" content="{{page.title}}"/>
   <meta name="twitter:description" content="{{page.excerpt | strip_html}}"/>
   <meta name="twitter:image" content="{{site.url}}/public/post-images/{{ page.image}}"/>
