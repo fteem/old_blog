@@ -58,7 +58,7 @@ which page. Or maybe they do, I haven't seen a phonebook in a while.
 
 Nevertheless, indexes have different architectures/indexing methods. And the
 phonebook has a **clustered index**. Clustering means that the data is in a
-distinct order, resulting in the row data being stored in order. If this confuses
+distinct order, resulting the row data to be stored in order. If this confuses
 you, think again about the phonebook - the records in the book are ordered
 alphabetically. Regardless of how simple this might seem to you, it's a clustered
 index. The way the data is ordered (clusters) makes it really easy to search and
@@ -165,7 +165,7 @@ query structure and the properties of the data. The query plans are really easy
 to produce in PostgreSQL. It comes with a really neat command called `EXPLAIN`, which
 shows the query plan, which contains all of the relevant info.
 
-For example, let's see the query plan for the query that returs all of the users:
+For example, let's see the query plan for the query that returns all of the users:
 
 {% highlight sql %}
 EXPLAIN SELECT * FROM users;
@@ -184,7 +184,7 @@ As you can notice, this simple query requires a **Seq**uential **Scan**, because
 there is no `WHERE` clause in it. This means that it will have to scan each row
 of the table and return it.
 
-In the paretheses we notice couple of values. The cost is a range of arbitrary
+In the parentheses we notice couple of values. The cost is a range of arbitrary
 units (that closely resemble disk page fetches) - starting from the expected
 before the output phase can begin, to the estimated total cost of this query.
 Then, the numbers of rows output that were estimated by the query planner. Last,
@@ -304,13 +304,13 @@ Seq Scan on users  (cost=0.00..25.00 rows=600 width=48)
 
 Hold on, what happened here? Although there is an index on the primary key
 column, PostgreSQL decides that doing a sequential scan on the `user` table is
-more performant then an index scan. An index scan would require finding 600
-index rows and returning each an every one of those records whose index were found.
+more performant than an index scan. An index scan would require finding 600
+indexes and returning each and every one of those records whose index were found.
 On the other hand, a sequential scan would just go over each of the records and
 filter out the unwanted rows.
 
 So, although this is a contrived example, you can see in some situations an
-index scan will not be as perfomant as a sequential scan.
+index scan will not be as performant as a sequential scan.
 
 ## Careful Usage
 
