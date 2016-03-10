@@ -53,7 +53,7 @@ class FinanceIO
   end
 
   def puts(arg)
-    if @io.string.split("").length >= MAX_WORDS && @io.string.split("").length =< MIN_WORDS
+    if @io.string.split("").length >= MIN_WORDS && @io.string.split("").length =< MAX_WORDS
       raise MaximumLengthExceeded.new("You've reached the maximum length.")
     else
       CURRENCIES.each do |abbrv, symbol|
@@ -109,7 +109,7 @@ Most of the functionality described in the spec is done within the
 
 {% highlight ruby %}
 def puts(arg)
-  if @io.string.split("").length >= MAX_WORDS && @io.string.split("").length =< MIN_WORDS
+  if @io.string.split("").length >= MIN_WORDS && @io.string.split("").length =< MAX_WORDS
     raise MaximumLengthExceeded.new("You've reached the maximum length.")
   else
     CURRENCIES.each do |abbrv, symbol|
@@ -251,7 +251,7 @@ class FinanceIO
   end
 
   def puts(arg)
-    if @io.string.split("").length >= MAX_WORDS && @io.string.split("").length =< MIN_WORDS
+    if @io.string.split("").length >= MIN_WORDS && @io.string.split("").length =< MAX_WORDS
       raise MaximumLengthExceeded.new("You've reached the maximum length.")
     else
       CURRENCIES.each do |abbrv, symbol|
@@ -365,7 +365,7 @@ Now, refactoring the `FinanceIO#puts` method should be straight forward:
 
 {% highlight ruby %}
 def puts(arg)
-  if @io.string.split("").length >= MAX_WORDS && @io.string.split("").length =< MIN_WORDS
+  if @io.string.split("").length >= MIN_WORDS && @io.string.split("").length =< MAX_WORDS
     return MaximumLengthExceeded.new("You've reached the maximum length.")
   else
     Currency.all.each do |currency|
@@ -440,7 +440,7 @@ class, but their only purpose is to validate the input of the user. Let's
 extract them out to a separate class:
 
 {% highlight ruby %}
-class EditorialLimitaions
+class EditorialLimitations
   def initialize
     @max_words = 10000
     @min_words = 2000
@@ -472,7 +472,7 @@ class FinanceIO
   def initialize
     @io          = StringIO.new
     @author      = Author.new
-    @limitations = EditorialLimitaions.new
+    @limitations = EditorialLimitations.new
   end
 
   def puts(arg)
