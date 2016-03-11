@@ -44,7 +44,7 @@ SELECT * FROM people WHERE first_name = "John" and last_name = "Doe";
 Easy enough. But although this query is fast, under the hood, the database will
 hit every row of the table, until it finds the record it is looking for. I am
 sure your side-project won't have this problem soon, but imagine a table with
-milions of records, without indexes. Data retrieval would take seconds, sometimes
+millions of records, without indexes. Data retrieval would take seconds, sometimes
 maybe minutes. Imagine waiting 30 seconds for a list of videos on YouTube?
 
 ## Introducing Indexes
@@ -58,12 +58,12 @@ which page. Or maybe they do, I haven't seen a phonebook in a while.
 
 Nevertheless, indexes have different architectures/indexing methods. And the
 phonebook has a **clustered index**. Clustering means that the data is in a
-dicstinct order, resulting the row data to be stored in order. If this confuses
+distinct order, resulting in the row data being stored in order. If this confuses
 you, think again about the phonebook - the records in the book are ordered
 alphabetically. Regardless of how simple this might seem to you, it's a clustered
 index. The way the data is ordered (clusters) makes it really easy to search and
 find the needed phone number. So, a clustered index is an index which
-**phisically** orders the data (the actual bits on disk) in a certain way, and
+**physically** orders the data (the actual bits on disk) in a certain way, and
 when new data arrives it is saved in the same order.
 
 A caveat with the clustered indexes is that **only one** can be created on a
@@ -84,7 +84,7 @@ works.
 
 Non-clustered indexes are indexes that keep a separate ordering list that has
 pointers to the physical rows. It's basically like a book index, it knows on
-what page a ceratin chapter starts and ends. Now, unlike the clustered index, a
+what page a certain chapter starts and ends. Now, unlike the clustered index, a
 table can have many non-clustered indexes. But, the caveat with these indexes is
 that each new index will increase the time it takes to write new records.
 
@@ -197,7 +197,7 @@ SELECT * FROM users WHERE email = 'phughes5m@nbcnews.com';
 {% endhighlight %}
 
 The query will return the user whose email is `phughes5m@nbcnews.com`. Perfect.
-Let's `EXPLAIN` the query, and see it's query plan:
+Let's `EXPLAIN` the query, and see its query plan:
 
 {% highlight sql %}
 EXPLAIN SELECT * FROM users WHERE email = 'phughes5m@nbcnews.com';
@@ -285,7 +285,7 @@ Index Scan using users_pkey on users (cost=0.28..11.28 rows=100 width=48)
 (2 rows)
 {% endhighlight %}
 
-Looks about right, right? It's uses a Index Scan, with an Index Cond(itional)
+Looks about right, right? It uses a Index Scan, with an Index Cond(itional)
 searching for all `id`s between 100 and 200. Good enough.
 
 How about we try to return all users with `id`s between 200 and 800?
@@ -305,7 +305,7 @@ Seq Scan on users  (cost=0.00..25.00 rows=600 width=48)
 Hold on, what happened here? Although there is an index on the primary key
 column, PostgreSQL decides that doing a sequential scan on the `user` table is
 more performant then an index scan. An index scan would require finding 600
-indexes and returning each an every one of those records whose index were found.
+index rows and returning each an every one of those records whose index were found.
 On the other hand, a sequential scan would just go over each of the records and
 filter out the unwanted rows.
 
