@@ -449,7 +449,7 @@ class EditorialLimitations
 
   def within?(text)
     text_length = words(text)
-    text_length >= @max_words || text_length =< @min_words
+    text_length >= @min_words && text_length =< @max_words
   end
 
   private
