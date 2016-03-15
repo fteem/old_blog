@@ -54,7 +54,7 @@ class FinanceIO
 
   def puts(arg)
     if @io.string.split("").length >= MAX_WORDS || @io.string.split("").length =< MIN_WORDS
-      raise MaximumLengthExceeded.new("You've reached the maximum length.")
+      raise TextLengthExceeded.new("The text must be within #{MIN_WORDS} and #{MAX_WORDS} words.")
     else
       CURRENCIES.each do |abbrv, symbol|
         arg.gsub!(abbrv,symbol)
@@ -110,7 +110,7 @@ Most of the functionality described in the spec is done within the
 {% highlight ruby %}
 def puts(arg)
   if @io.string.split("").length >= MAX_WORDS || @io.string.split("").length =< MIN_WORDS
-    raise MaximumLengthExceeded.new("You've reached the maximum length.")
+    raise TextLengthExceeded.new("The text must be within #{@limitations.min_words} and #{@limitations.max_words} words.")
   else
     CURRENCIES.each do |abbrv, symbol|
       arg.gsub!(abbrv,symbol)
@@ -252,7 +252,7 @@ class FinanceIO
 
   def puts(arg)
     if @io.string.split("").length >= MAX_WORDS || @io.string.split("").length =< MIN_WORDS
-      raise MaximumLengthExceeded.new("You've reached the maximum length.")
+      raise TextLengthExceeded.new("The text must be within #{MIN_WORDS} and #{MAX_WORDS} words.")
     else
       CURRENCIES.each do |abbrv, symbol|
         arg.gsub!(abbrv,symbol)
@@ -441,6 +441,7 @@ extract them out to a separate class:
 
 {% highlight ruby %}
 class EditorialLimitations
+  attr_reader :max_words, :min_words
   def initialize
     @max_words = 10000
     @min_words = 2000
@@ -448,7 +449,7 @@ class EditorialLimitations
 
   def within?(text)
     text_length = words(text)
-    text_length >= @min_words && text_length =< @max_words
+    text_length >= @max_words || text_length =< @min_words
   end
 
   private
@@ -481,7 +482,7 @@ class FinanceIO
         arg.gsub!(currency.abbreviation, currency.symbol)
       end
     else
-      raise MaximumLengthExceeded.new("You've reached the maximum length.")
+      raise TextLengthExceeded.new("The text must be within #{@limitations.min_words} and #{@limitations.max_words} words.")
     end
     @io.puts(arg)
   end
