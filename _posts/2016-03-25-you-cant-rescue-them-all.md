@@ -130,3 +130,6 @@ In the end, I'll leave you with this quote, from Betrand Meyer, from his book
 > In practice, the rescue clause should be a short sequence of simple 
 > instructions designed to bring the object back to a stable state and to either 
 > retry the operation or terminate with failure.
+
+And if you want to learn more about exception handling in Ruby, I recommend 
+[Exceptional Ruby](http://exceptionalruby.com/), by Avdi Grimm.
