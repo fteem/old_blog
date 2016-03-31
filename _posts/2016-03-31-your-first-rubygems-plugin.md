@@ -13,7 +13,7 @@ what they are doing at the moment. For the rest of you, have you heard that
 Rubygems is extensible? Let's see how Rubygems does this, and how we can make
 our own Rubygem plugin.
 
-## Extensiblility
+## Extensibility
 
 Rubygems, since version 1.3.2 has the ability to load plugins installed in the
 gems collection or the `$LOAD_PATH`. This means that you can create a Ruby program
