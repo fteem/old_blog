@@ -20,11 +20,11 @@ history books about what has happened to humans in the past, Git is the only
 tool we have to see the history of our source code.
 
 While in some parts, especially in the early years of humanity, history can be
-misguiding or unclear, the history of a codebase is very clear from the very end.
-Or is it? Think about this - if we could be able to go back in time, and watch
-every single thing happen and write all of these things down, how different would
-the world be? We would know all of the facts, instead of assumptions and relying
-on some manuscripts from thousands years ago.
+misguiding or unclear, the history of a codebase is very clear from the very 
+beginning. Or is it? Think about this - if we could be able to go back in time, 
+and watch every single thing happen and write all of these things down, how 
+different would the world be? We would know all of the facts, instead of 
+assumptions and relying on some manuscripts from thousands years ago.
 
 So, when we are given the chance to start a new Git repo, and do the legendary
 initial commit, why don't we care about what the history of the codebase will
