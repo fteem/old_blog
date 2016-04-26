@@ -64,7 +64,7 @@ But, can you?
 ## Context is king
 
 So great, you found your merge commit. But, how are you going to figure out the
-context of the diff? What did some method's signature change? What was wrong with
+context of the diff? Why did some method's signature change? What was wrong with
 the naming of that class that you had to change it to something else? Also,
 you added a new table and couple of polymorphic associations? Whoa, this must've
 been quite a bit of work. But only one sqashed merge commit.
