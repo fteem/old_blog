@@ -2,7 +2,6 @@
 layout: post
 title: "How Rails handles status codes"
 tags: [ruby, decorators, presenters, odd]
-excerpt: "A dive into Rails' status code handling mechanism"
 image: how-rails-handles-status-codes.png
 ---
 
@@ -10,11 +9,13 @@ Recently, I have been building an API as part of my day job. Rails is a great
 framework to build APIs in, and it has been a joy so far. When building the
 responses of the API, it's paramount to understand what HTTP statuses you should
 utilise, which will in return help the consumers by providing more meaningful 
-responses. Sure, you could always have a `status` property in the response JSON,
-which will be a human-readable status code. But, I would like you to think about
-HTTP status codes as a nice card on a present, with your beautiful handwriting
-and best wishes to whom the gift goes to. HTTP status code don't just add more
-semantical correctness, but they also speak about the nature of the response.
+responses. 
+
+Sure, you could always have a `status` property in the response JSON, which will 
+be a human-readable status code. But, I would like you to think about HTTP status 
+codes as a nice card on a present, with your beautiful handwriting and best 
+wishes to whom the gift goes to. HTTP status code don't just add more semantical 
+correctness, but they also speak about the nature of the response.
 
 ## Rails and statuses
 
